@@ -1,14 +1,10 @@
-import {
-  ForbiddenException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
-import { Role } from '@prisma/client';
-import { PrismaService } from '../../database/prisma.service';
-import type { AuthRequestUser } from '../auth/interfaces/auth-request-user.interface';
-import { CreateInternshipDto } from './dto/create-internship.dto';
-import { ListInternshipsQueryDto } from './dto/list-internships-query.dto';
-import { UpdateInternshipDto } from './dto/update-internship.dto';
+import { ForbiddenException, Injectable, NotFoundException } from "@nestjs/common";
+import { Role } from "@prisma/client";
+import { PrismaService } from "../../database/prisma.service";
+import type { AuthRequestUser } from "../auth/interfaces/auth-request-user.interface";
+import { CreateInternshipDto } from "./dto/create-internship.dto";
+import { ListInternshipsQueryDto } from "./dto/list-internships-query.dto";
+import { UpdateInternshipDto } from "./dto/update-internship.dto";
 
 @Injectable()
 export class InternshipsService {
@@ -16,7 +12,7 @@ export class InternshipsService {
 
   create(user: AuthRequestUser, dto: CreateInternshipDto) {
     if (user.role !== Role.STUDENT) {
-      throw new ForbiddenException('Only students can create internships');
+      throw new ForbiddenException("Only students can create internships");
     }
 
     return this.prisma.internship.create({
@@ -29,7 +25,7 @@ export class InternshipsService {
 
   listMine(user: AuthRequestUser, query: ListInternshipsQueryDto) {
     if (user.role !== Role.STUDENT) {
-      throw new ForbiddenException('Only students can view internships');
+      throw new ForbiddenException("Only students can view internships");
     }
 
     return this.prisma.internship.findMany({
@@ -37,7 +33,7 @@ export class InternshipsService {
         studentId: user.id,
         status: query.status,
       },
-      orderBy: { createdAt: 'desc' },
+      orderBy: { createdAt: "desc" },
     });
   }
 
@@ -47,21 +43,17 @@ export class InternshipsService {
     });
 
     if (!internship) {
-      throw new NotFoundException('Internship not found');
+      throw new NotFoundException("Internship not found");
     }
 
     if (user.role !== Role.ADMIN && internship.studentId !== user.id) {
-      throw new ForbiddenException('You do not have access to this internship');
+      throw new ForbiddenException("You do not have access to this internship");
     }
 
     return internship;
   }
 
-  async update(
-    user: AuthRequestUser,
-    internshipId: string,
-    dto: UpdateInternshipDto,
-  ) {
+  async update(user: AuthRequestUser, internshipId: string, dto: UpdateInternshipDto) {
     await this.getOne(user, internshipId);
 
     return this.prisma.internship.update({

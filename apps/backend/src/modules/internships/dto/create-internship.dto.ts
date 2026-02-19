@@ -1,5 +1,5 @@
-import { IsEnum, IsOptional, IsString, IsUrl } from 'class-validator';
-import { InternshipStatus } from '@prisma/client';
+import { IsEnum, IsOptional, IsString, IsUrl } from "class-validator";
+import { InternshipStatus } from "@prisma/client";
 
 export class CreateInternshipDto {
   @IsString()
