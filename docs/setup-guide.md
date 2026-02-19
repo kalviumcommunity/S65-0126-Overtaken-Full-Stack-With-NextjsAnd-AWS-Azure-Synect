@@ -61,6 +61,28 @@ Open a new terminal and go to frontend:
 
 ```bash
 cd apps/frontend
+```
+
+Create `.env.local` from `.env.example`:
+
+```bash
+cp .env.example .env.local
+```
+
+Example value:
+
+```env
+NEXT_PUBLIC_API_BASE_URL="http://localhost:3001"
+```
+
+Important:
+
+- Only variables prefixed with `NEXT_PUBLIC_` are available in browser code.
+- Keep secrets server-side only (do not expose secret keys with `NEXT_PUBLIC_`).
+
+Run frontend:
+
+```bash
 bun run dev
 ```
 
@@ -89,7 +111,7 @@ curl http://localhost:3001/health
 Expected response shape:
 
 ```json
-{"status":"ok","database":"connected"}
+{ "status": "ok", "database": "connected" }
 ```
 
 ## 7) Common issues
