@@ -80,6 +80,9 @@ Errors are handled centrally with a global error handler:
 - `GET /api/bookings/mentor`
 - `PATCH /api/bookings/:id/status`
 - `PATCH /api/bookings/:id/cancel`
+- `POST /api/uploads/presign`
+- `POST /api/uploads/complete`
+- `GET /api/uploads/me`
 
 List endpoints support pagination using `?page=1&limit=10`.
 
@@ -88,6 +91,12 @@ List endpoints support pagination using `?page=1&limit=10`.
 - Redis cache is used with a cache-aside pattern.
 - Mentor listing (`GET /api/profiles/mentors`) is cached with TTL.
 - Cache keys are invalidated when mentor profile data changes.
+
+## File uploads (AWS S3)
+
+- Use `POST /api/uploads/presign` to generate a short-lived S3 pre-signed upload URL.
+- Client uploads directly to S3 using the signed URL.
+- Use `POST /api/uploads/complete` to persist file metadata in PostgreSQL.
 
 ## Database
 
