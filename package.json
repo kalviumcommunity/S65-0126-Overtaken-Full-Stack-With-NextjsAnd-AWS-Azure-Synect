@@ -7,8 +7,8 @@
   ],
   "scripts": {
     "prepare": "husky",
-    "dev:frontend": "bun --cwd apps/frontend run dev",
-    "dev:backend": "bun --cwd apps/backend run start:dev",
+    "dev:frontend": "node api.js && bun --cwd apps/frontend run dev",
+    "dev:backend": "node api.js && bun --cwd apps/backend run start:dev",
     "build": "bun --cwd apps/backend run build && bun --cwd apps/frontend run build",
     "lint": "bun --cwd apps/backend run lint && bun --cwd apps/frontend run lint",
     "format": "prettier --write .",
