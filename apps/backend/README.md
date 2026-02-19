@@ -49,6 +49,8 @@ bun run test:e2e
 - `POST /api/auth/login`
 - `GET /api/auth/me` (requires `Authorization: Bearer <token>`)
 
+All POST/PATCH payloads are validated with Zod before reaching services.
+
 ## Core endpoints
 
 - `GET /api/profiles/me`
