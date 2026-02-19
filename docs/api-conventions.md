@@ -10,6 +10,7 @@ Example:
 
 - `GET /api/health`
 - `POST /api/auth/login`
+- `GET /api/admin` (ADMIN role only)
 
 ## Route naming
 
@@ -62,3 +63,8 @@ Error responses:
   "timestamp": "2026-02-20T00:00:00.000Z"
 }
 ```
+
+Production note:
+
+- In development, stack/context can be included for debugging.
+- In production, sensitive internals are redacted from responses.
