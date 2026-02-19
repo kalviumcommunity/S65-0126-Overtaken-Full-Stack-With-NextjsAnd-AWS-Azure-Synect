@@ -14,6 +14,13 @@ type ApiSuccessResponse<T> = {
   timestamp: string;
 };
 
+type ApiErrorResponse = {
+  success: false;
+  error: {
+    code: string;
+  };
+};
+
 describe("AppController (e2e)", () => {
   let app: INestApplication<App>;
 
@@ -53,6 +60,17 @@ describe("AppController (e2e)", () => {
         expect(body.message).toBe("Request successful");
         expect(body.data).toBe("Hello World!");
         expect(body.timestamp).toBeTruthy();
+      });
+  });
+
+  it("/api/admin (GET) should reject without token", () => {
+    return request(app.getHttpServer())
+      .get("/api/admin")
+      .expect(401)
+      .expect((response) => {
+        const body = response.body as ApiErrorResponse;
+        expect(body.success).toBe(false);
+        expect(body.error.code).toBe("UNAUTHORIZED");
       });
   });
 });

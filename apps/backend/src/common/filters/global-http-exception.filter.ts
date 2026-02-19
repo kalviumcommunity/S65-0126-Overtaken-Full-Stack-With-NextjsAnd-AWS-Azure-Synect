@@ -1,10 +1,6 @@
-import { ArgumentsHost, Catch, ExceptionFilter, HttpException, HttpStatus } from "@nestjs/common";
-
-type ErrorPayload = {
-  message?: string | string[];
-  error?: string;
-  code?: string;
-};
+import { ArgumentsHost, Catch, ExceptionFilter } from "@nestjs/common";
+import { handleError } from "../utils/handle-error";
+import { logger } from "../utils/logger";
 
 @Catch()
 export class GlobalHttpExceptionFilter implements ExceptionFilter {
@@ -13,57 +9,34 @@ export class GlobalHttpExceptionFilter implements ExceptionFilter {
     const response = ctx.getResponse<{
       status: (statusCode: number) => { send: (body: unknown) => void };
     }>();
-    const request = ctx.getRequest<{ url: string }>();
+    const request = ctx.getRequest<{ url: string; method: string }>();
 
-    const status =
-      exception instanceof HttpException ? exception.getStatus() : HttpStatus.INTERNAL_SERVER_ERROR;
+    const handled = handleError({
+      exception,
+      path: request.url,
+      method: request.method,
+    });
 
-    const exceptionResponse =
-      exception instanceof HttpException
-        ? (exception.getResponse() as string | ErrorPayload)
-        : "Internal server error";
+    logger.error(handled.message, {
+      path: handled.path,
+      method: handled.method,
+      statusCode: handled.statusCode,
+      code: handled.code,
+      details: handled.details,
+      stack: handled.stack,
+    });
 
-    const fallbackMessage =
-      exceptionResponse && typeof exceptionResponse === "object"
-        ? exceptionResponse.message
-        : exceptionResponse;
-
-    const message = Array.isArray(fallbackMessage)
-      ? fallbackMessage.join(", ")
-      : (fallbackMessage ?? "Unexpected error");
-
-    const errorCode =
-      typeof exceptionResponse === "object" && exceptionResponse.code
-        ? exceptionResponse.code
-        : this.defaultErrorCode(status as HttpStatus);
-
-    response.status(status).send({
+    response.status(handled.statusCode).send({
       success: false,
-      message,
+      message: handled.message,
       data: null,
       error: {
-        code: errorCode,
-        details: typeof exceptionResponse === "object" ? (exceptionResponse.error ?? null) : null,
+        code: handled.code,
+        details: handled.details,
       },
-      path: request.url,
+      path: handled.path,
       timestamp: new Date().toISOString(),
+      ...(handled.stack ? { stack: handled.stack } : {}),
     });
-  }
-
-  private defaultErrorCode(status: HttpStatus) {
-    switch (status) {
-      case HttpStatus.BAD_REQUEST:
-        return "BAD_REQUEST";
-      case HttpStatus.UNAUTHORIZED:
-        return "UNAUTHORIZED";
-      case HttpStatus.FORBIDDEN:
-        return "FORBIDDEN";
-      case HttpStatus.NOT_FOUND:
-        return "NOT_FOUND";
-      case HttpStatus.CONFLICT:
-        return "CONFLICT";
-      default:
-        return "INTERNAL_SERVER_ERROR";
-    }
   }
 }
