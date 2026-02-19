@@ -15,6 +15,7 @@ Create `.env` from `.env.example` and set at least:
 ```env
 DATABASE_URL=postgresql://...
 JWT_SECRET=...
+REDIS_URL=redis://localhost:6379
 ```
 
 For local PostgreSQL via Docker:
@@ -22,6 +23,8 @@ For local PostgreSQL via Docker:
 ```bash
 docker compose up -d
 ```
+
+This starts PostgreSQL and Redis for local development.
 
 ## Run
 
@@ -79,6 +82,12 @@ Errors are handled centrally with a global error handler:
 - `PATCH /api/bookings/:id/cancel`
 
 List endpoints support pagination using `?page=1&limit=10`.
+
+## Caching
+
+- Redis cache is used with a cache-aside pattern.
+- Mentor listing (`GET /api/profiles/mentors`) is cached with TTL.
+- Cache keys are invalidated when mentor profile data changes.
 
 ## Database
 
