@@ -1,14 +1,24 @@
-import { Body, Controller, Get, Param, Patch, Post, Query, UseGuards } from "@nestjs/common";
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Query,
+  UseGuards,
+  UsePipes,
+} from "@nestjs/common";
 import { Role } from "@prisma/client";
+import { ZodValidationPipe } from "../../common/pipes/zod-validation.pipe";
 import { CurrentUser } from "../auth/decorators/current-user.decorator";
 import { Roles } from "../auth/decorators/roles.decorator";
 import { JwtAuthGuard } from "../auth/guards/jwt-auth.guard";
 import { RolesGuard } from "../auth/guards/roles.guard";
 import type { AuthRequestUser } from "../auth/interfaces/auth-request-user.interface";
 import { BookingsService } from "./bookings.service";
-import { CreateBookingDto } from "./dto/create-booking.dto";
 import { ListBookingsQueryDto } from "./dto/list-bookings-query.dto";
-import { UpdateBookingStatusDto } from "./dto/update-booking-status.dto";
+import { createBookingSchema, updateBookingStatusSchema } from "./schemas/bookings.schema";
 
 @Controller("bookings")
 @UseGuards(JwtAuthGuard, RolesGuard)
@@ -17,7 +27,11 @@ export class BookingsController {
 
   @Post()
   @Roles(Role.STUDENT)
-  create(@CurrentUser() user: AuthRequestUser, @Body() dto: CreateBookingDto) {
+  @UsePipes(new ZodValidationPipe(createBookingSchema))
+  create(
+    @CurrentUser() user: AuthRequestUser,
+    @Body() dto: { availabilityId: string; note?: string },
+  ) {
     return this.bookingsService.create(user, dto);
   }
 
@@ -35,10 +49,11 @@ export class BookingsController {
 
   @Patch(":id/status")
   @Roles(Role.MENTOR, Role.ADMIN)
+  @UsePipes(new ZodValidationPipe(updateBookingStatusSchema))
   updateStatus(
     @CurrentUser() user: AuthRequestUser,
     @Param("id") id: string,
-    @Body() dto: UpdateBookingStatusDto,
+    @Body() dto: { status: "PENDING" | "ACCEPTED" | "REJECTED" | "CANCELLED" },
   ) {
     return this.bookingsService.updateStatus(user, id, dto);
   }
