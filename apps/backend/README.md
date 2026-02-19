@@ -75,6 +75,7 @@ bun run test:e2e
 ```bash
 bun run db:migrate:dev
 bun run db:generate
+bun run db:seed
 ```
 
 Prisma is configured via `prisma.config.ts` at the backend app root.
