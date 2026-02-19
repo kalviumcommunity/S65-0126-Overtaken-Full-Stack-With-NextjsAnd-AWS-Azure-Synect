@@ -3,15 +3,15 @@ import {
   ConflictException,
   Injectable,
   UnauthorizedException,
-} from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
-import { Role, User } from '@prisma/client';
-import { compare, hash } from 'bcryptjs';
-import { PrismaService } from '../../database/prisma.service';
-import { LoginDto } from './dto/login.dto';
-import { SignupDto } from './dto/signup.dto';
+} from "@nestjs/common";
+import { JwtService } from "@nestjs/jwt";
+import { Role, User } from "@prisma/client";
+import { compare, hash } from "bcryptjs";
+import { PrismaService } from "../../database/prisma.service";
+import { LoginDto } from "./dto/login.dto";
+import { SignupDto } from "./dto/signup.dto";
 
-type SafeUser = Omit<User, 'passwordHash'>;
+type SafeUser = Omit<User, "passwordHash">;
 
 @Injectable()
 export class AuthService {
@@ -20,7 +20,7 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {
     if (!process.env.JWT_SECRET) {
-      throw new Error('JWT_SECRET is not configured');
+      throw new Error("JWT_SECRET is not configured");
     }
   }
 
@@ -30,7 +30,7 @@ export class AuthService {
     });
 
     if (existingUser) {
-      throw new ConflictException('Email is already in use');
+      throw new ConflictException("Email is already in use");
     }
 
     const passwordHash = await hash(dto.password, 10);
@@ -51,12 +51,12 @@ export class AuthService {
     });
 
     if (!user) {
-      throw new UnauthorizedException('Invalid email or password');
+      throw new UnauthorizedException("Invalid email or password");
     }
 
     const isPasswordValid = await compare(dto.password, user.passwordHash);
     if (!isPasswordValid) {
-      throw new UnauthorizedException('Invalid email or password');
+      throw new UnauthorizedException("Invalid email or password");
     }
 
     return this.buildAuthResponse(user);
@@ -66,7 +66,7 @@ export class AuthService {
     const user = await this.prisma.user.findUnique({ where: { id: userId } });
 
     if (!user) {
-      throw new UnauthorizedException('User not found');
+      throw new UnauthorizedException("User not found");
     }
 
     return this.stripPassword(user);
@@ -74,12 +74,12 @@ export class AuthService {
 
   async validateUser(userId: string, role: Role) {
     if (!userId || !role) {
-      throw new BadRequestException('Invalid token payload');
+      throw new BadRequestException("Invalid token payload");
     }
 
     const user = await this.prisma.user.findUnique({ where: { id: userId } });
     if (!user) {
-      throw new UnauthorizedException('User not found');
+      throw new UnauthorizedException("User not found");
     }
 
     return this.stripPassword(user);

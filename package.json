@@ -6,15 +6,33 @@
     "packages/*"
   ],
   "scripts": {
+    "prepare": "husky",
     "dev:frontend": "bun --cwd apps/frontend run dev",
     "dev:backend": "bun --cwd apps/backend run start:dev",
     "build": "bun --cwd apps/backend run build && bun --cwd apps/frontend run build",
     "lint": "bun --cwd apps/backend run lint && bun --cwd apps/frontend run lint",
+    "format": "prettier --write .",
     "test": "bun --cwd apps/backend run test",
     "test:e2e": "bun --cwd apps/backend run test:e2e"
   },
+  "lint-staged": {
+    "apps/backend/**/*.{js,mjs,cjs,ts,tsx}": [
+      "bun run --cwd apps/backend lint",
+      "prettier --write"
+    ],
+    "apps/frontend/**/*.{js,mjs,cjs,ts,tsx}": [
+      "bun run --cwd apps/frontend lint",
+      "prettier --write"
+    ],
+    "**/*.{json,md,css,yml,yaml}": [
+      "prettier --write"
+    ]
+  },
   "devDependencies": {
     "@types/bun": "latest",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.2.0",
+    "prettier": "^3.6.2",
     "typescript": "^5.7.3"
   }
 }

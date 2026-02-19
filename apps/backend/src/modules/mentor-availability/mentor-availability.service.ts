@@ -3,11 +3,11 @@ import {
   ForbiddenException,
   Injectable,
   NotFoundException,
-} from '@nestjs/common';
-import { BookingStatus, Role } from '@prisma/client';
-import { PrismaService } from '../../database/prisma.service';
-import type { AuthRequestUser } from '../auth/interfaces/auth-request-user.interface';
-import { CreateAvailabilityDto } from './dto/create-availability.dto';
+} from "@nestjs/common";
+import { BookingStatus, Role } from "@prisma/client";
+import { PrismaService } from "../../database/prisma.service";
+import type { AuthRequestUser } from "../auth/interfaces/auth-request-user.interface";
+import { CreateAvailabilityDto } from "./dto/create-availability.dto";
 
 @Injectable()
 export class MentorAvailabilityService {
@@ -15,13 +15,11 @@ export class MentorAvailabilityService {
 
   async create(user: AuthRequestUser, dto: CreateAvailabilityDto) {
     if (user.role !== Role.MENTOR) {
-      throw new ForbiddenException(
-        'Only mentors can create availability slots',
-      );
+      throw new ForbiddenException("Only mentors can create availability slots");
     }
 
     if (dto.endTime <= dto.startTime) {
-      throw new BadRequestException('endTime must be after startTime');
+      throw new BadRequestException("endTime must be after startTime");
     }
 
     const overlap = await this.prisma.mentorAvailability.findFirst({
@@ -33,9 +31,7 @@ export class MentorAvailabilityService {
     });
 
     if (overlap) {
-      throw new BadRequestException(
-        'Availability slot overlaps with existing slot',
-      );
+      throw new BadRequestException("Availability slot overlaps with existing slot");
     }
 
     return this.prisma.mentorAvailability.create({
@@ -49,14 +45,12 @@ export class MentorAvailabilityService {
 
   listMine(user: AuthRequestUser) {
     if (user.role !== Role.MENTOR) {
-      throw new ForbiddenException(
-        'Only mentors can view their own availability',
-      );
+      throw new ForbiddenException("Only mentors can view their own availability");
     }
 
     return this.prisma.mentorAvailability.findMany({
       where: { mentorId: user.id },
-      orderBy: { startTime: 'asc' },
+      orderBy: { startTime: "asc" },
     });
   }
 
@@ -76,7 +70,7 @@ export class MentorAvailabilityService {
           },
         },
       },
-      orderBy: { startTime: 'asc' },
+      orderBy: { startTime: "asc" },
     });
   }
 
@@ -86,11 +80,11 @@ export class MentorAvailabilityService {
     });
 
     if (!slot) {
-      throw new NotFoundException('Availability slot not found');
+      throw new NotFoundException("Availability slot not found");
     }
 
     if (slot.mentorId !== user.id && user.role !== Role.ADMIN) {
-      throw new ForbiddenException('You cannot remove this slot');
+      throw new ForbiddenException("You cannot remove this slot");
     }
 
     const activeBooking = await this.prisma.booking.findFirst({
@@ -101,9 +95,7 @@ export class MentorAvailabilityService {
     });
 
     if (activeBooking) {
-      throw new BadRequestException(
-        'Cannot remove slot with active booking request',
-      );
+      throw new BadRequestException("Cannot remove slot with active booking request");
     }
 
     return this.prisma.mentorAvailability.delete({
