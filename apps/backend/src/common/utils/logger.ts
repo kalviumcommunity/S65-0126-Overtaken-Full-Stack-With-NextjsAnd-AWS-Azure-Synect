@@ -1,10 +1,12 @@
-type LogLevel = "error" | "warn";
+type LogLevel = "error" | "warn" | "info";
 
 type LogMeta = {
   path?: string;
   method?: string;
   statusCode?: number;
   code?: string;
+  messageId?: string;
+  to?: string;
   details?: unknown;
   stack?: string;
 };
@@ -24,5 +26,8 @@ export const logger = {
   },
   warn(message: string, meta?: LogMeta) {
     console.warn(serializeLog("warn", message, meta));
+  },
+  info(message: string, meta?: LogMeta) {
+    console.info(serializeLog("info", message, meta));
   },
 };

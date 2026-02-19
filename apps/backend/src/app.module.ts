@@ -6,6 +6,7 @@ import { DatabaseModule } from "./database/database.module";
 import { AdminModule } from "./modules/admin/admin.module";
 import { AuthModule } from "./modules/auth/auth.module";
 import { BookingsModule } from "./modules/bookings/bookings.module";
+import { EmailsModule } from "./modules/emails/emails.module";
 import { HealthModule } from "./modules/health/health.module";
 import { InternshipsModule } from "./modules/internships/internships.module";
 import { MentorAvailabilityModule } from "./modules/mentor-availability/mentor-availability.module";
@@ -18,6 +19,7 @@ import { UploadsModule } from "./modules/uploads/uploads.module";
     DatabaseModule,
     AdminModule,
     AuthModule,
+    EmailsModule,
     HealthModule,
     ProfilesModule,
     InternshipsModule,
