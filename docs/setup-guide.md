@@ -105,7 +105,7 @@ bun run build
 After backend starts, verify:
 
 ```bash
-curl http://localhost:3001/health
+curl http://localhost:3001/api/health
 ```
 
 Expected response shape:

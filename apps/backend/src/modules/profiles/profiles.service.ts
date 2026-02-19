@@ -2,6 +2,7 @@ import { ForbiddenException, Injectable } from "@nestjs/common";
 import { Role } from "@prisma/client";
 import { PrismaService } from "../../database/prisma.service";
 import type { AuthRequestUser } from "../auth/interfaces/auth-request-user.interface";
+import { ListMentorsQueryDto } from "./dto/list-mentors-query.dto";
 import { UpdateMentorProfileDto } from "./dto/update-mentor-profile.dto";
 import { UpdateStudentProfileDto } from "./dto/update-student-profile.dto";
 
@@ -52,9 +53,11 @@ export class ProfilesService {
     });
   }
 
-  listMentors() {
+  listMentors(query: ListMentorsQueryDto) {
     return this.prisma.user.findMany({
       where: { role: Role.MENTOR },
+      skip: query.skip,
+      take: query.take,
       select: {
         id: true,
         email: true,

@@ -39,3 +39,4 @@ bun run build
 
 - Branching and PR process: `docs/collaboration-workflow.md`
 - Local setup guide: `docs/setup-guide.md`
+- API conventions: `docs/api-conventions.md`
