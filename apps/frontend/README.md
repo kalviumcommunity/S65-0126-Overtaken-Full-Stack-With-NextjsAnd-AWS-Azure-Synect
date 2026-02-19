@@ -10,6 +10,20 @@ Next.js frontend application for Synect.
 
 ## Run
 
+Create local env file from example:
+
+```bash
+cp .env.example .env.local
+```
+
+Use this variable for backend API base URL:
+
+```env
+NEXT_PUBLIC_API_BASE_URL="http://localhost:3001"
+```
+
+Only `NEXT_PUBLIC_*` variables are exposed to client-side code.
+
 ```bash
 bun run dev
 ```
