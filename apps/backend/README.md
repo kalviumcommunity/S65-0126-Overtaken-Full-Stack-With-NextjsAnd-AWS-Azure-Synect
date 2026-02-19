@@ -17,6 +17,12 @@ DATABASE_URL=postgresql://...
 JWT_SECRET=...
 ```
 
+For local PostgreSQL via Docker:
+
+```bash
+docker compose up -d
+```
+
 ## Run
 
 ```bash
@@ -42,6 +48,27 @@ bun run test:e2e
 - `POST /auth/signup`
 - `POST /auth/login`
 - `GET /auth/me` (requires `Authorization: Bearer <token>`)
+
+## Core endpoints
+
+- `GET /profiles/me`
+- `PATCH /profiles/student`
+- `PATCH /profiles/mentor`
+- `GET /profiles/mentors`
+- `POST /internships`
+- `GET /internships`
+- `GET /internships/:id`
+- `PATCH /internships/:id`
+- `DELETE /internships/:id`
+- `POST /mentor-availability`
+- `GET /mentor-availability/me`
+- `GET /mentor-availability`
+- `DELETE /mentor-availability/:id`
+- `POST /bookings`
+- `GET /bookings/student`
+- `GET /bookings/mentor`
+- `PATCH /bookings/:id/status`
+- `PATCH /bookings/:id/cancel`
 
 ## Database
 
