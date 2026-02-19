@@ -8,16 +8,17 @@ import {
   Post,
   Query,
   UseGuards,
+  UsePipes,
 } from "@nestjs/common";
 import { Role } from "@prisma/client";
+import { ZodValidationPipe } from "../../common/pipes/zod-validation.pipe";
 import { CurrentUser } from "../auth/decorators/current-user.decorator";
 import { Roles } from "../auth/decorators/roles.decorator";
 import { JwtAuthGuard } from "../auth/guards/jwt-auth.guard";
 import { RolesGuard } from "../auth/guards/roles.guard";
 import type { AuthRequestUser } from "../auth/interfaces/auth-request-user.interface";
-import { CreateInternshipDto } from "./dto/create-internship.dto";
 import { ListInternshipsQueryDto } from "./dto/list-internships-query.dto";
-import { UpdateInternshipDto } from "./dto/update-internship.dto";
+import { createInternshipSchema, updateInternshipSchema } from "./schemas/internships.schema";
 import { InternshipsService } from "./internships.service";
 
 @Controller("internships")
@@ -27,7 +28,18 @@ export class InternshipsController {
 
   @Post()
   @Roles(Role.STUDENT)
-  create(@CurrentUser() user: AuthRequestUser, @Body() dto: CreateInternshipDto) {
+  @UsePipes(new ZodValidationPipe(createInternshipSchema))
+  create(
+    @CurrentUser() user: AuthRequestUser,
+    @Body()
+    dto: {
+      company: string;
+      roleTitle: string;
+      status?: "APPLIED" | "ACTIVE" | "COMPLETED";
+      applicationLink?: string;
+      notes?: string;
+    },
+  ) {
     return this.internshipsService.create(user, dto);
   }
 
@@ -43,10 +55,18 @@ export class InternshipsController {
   }
 
   @Patch(":id")
+  @UsePipes(new ZodValidationPipe(updateInternshipSchema))
   update(
     @CurrentUser() user: AuthRequestUser,
     @Param("id") id: string,
-    @Body() dto: UpdateInternshipDto,
+    @Body()
+    dto: {
+      company?: string;
+      roleTitle?: string;
+      status?: "APPLIED" | "ACTIVE" | "COMPLETED";
+      applicationLink?: string;
+      notes?: string;
+    },
   ) {
     return this.internshipsService.update(user, id, dto);
   }
