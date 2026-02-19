@@ -83,6 +83,8 @@ Errors are handled centrally with a global error handler:
 - `POST /api/uploads/presign`
 - `POST /api/uploads/complete`
 - `GET /api/uploads/me`
+- `POST /api/emails/welcome` (ADMIN only)
+- `POST /api/emails/notification` (ADMIN only)
 
 List endpoints support pagination using `?page=1&limit=10`.
 
@@ -97,6 +99,12 @@ List endpoints support pagination using `?page=1&limit=10`.
 - Use `POST /api/uploads/presign` to generate a short-lived S3 pre-signed upload URL.
 - Client uploads directly to S3 using the signed URL.
 - Use `POST /api/uploads/complete` to persist file metadata in PostgreSQL.
+
+## Email service (AWS SES)
+
+- Transactional email endpoints are available under `/api/emails/*`.
+- Sender email is configured via `AWS_SES_FROM_EMAIL`.
+- In SES sandbox mode, recipient emails must be verified.
 
 ## Database
 
