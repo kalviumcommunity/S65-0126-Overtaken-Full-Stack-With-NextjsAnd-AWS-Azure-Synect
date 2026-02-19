@@ -1,9 +1,9 @@
-import { ForbiddenException, Injectable } from '@nestjs/common';
-import { Role } from '@prisma/client';
-import { PrismaService } from '../../database/prisma.service';
-import type { AuthRequestUser } from '../auth/interfaces/auth-request-user.interface';
-import { UpdateMentorProfileDto } from './dto/update-mentor-profile.dto';
-import { UpdateStudentProfileDto } from './dto/update-student-profile.dto';
+import { ForbiddenException, Injectable } from "@nestjs/common";
+import { Role } from "@prisma/client";
+import { PrismaService } from "../../database/prisma.service";
+import type { AuthRequestUser } from "../auth/interfaces/auth-request-user.interface";
+import { UpdateMentorProfileDto } from "./dto/update-mentor-profile.dto";
+import { UpdateStudentProfileDto } from "./dto/update-student-profile.dto";
 
 @Injectable()
 export class ProfilesService {
@@ -24,7 +24,7 @@ export class ProfilesService {
 
   updateStudentProfile(user: AuthRequestUser, dto: UpdateStudentProfileDto) {
     if (user.role !== Role.STUDENT) {
-      throw new ForbiddenException('Only students can update student profile');
+      throw new ForbiddenException("Only students can update student profile");
     }
 
     return this.prisma.studentProfile.upsert({
@@ -39,7 +39,7 @@ export class ProfilesService {
 
   updateMentorProfile(user: AuthRequestUser, dto: UpdateMentorProfileDto) {
     if (user.role !== Role.MENTOR) {
-      throw new ForbiddenException('Only mentors can update mentor profile');
+      throw new ForbiddenException("Only mentors can update mentor profile");
     }
 
     return this.prisma.mentorProfile.upsert({
@@ -60,7 +60,7 @@ export class ProfilesService {
         email: true,
         mentorProfile: true,
       },
-      orderBy: { createdAt: 'desc' },
+      orderBy: { createdAt: "desc" },
     });
   }
 }

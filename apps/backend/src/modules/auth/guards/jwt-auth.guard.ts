@@ -1,12 +1,7 @@
-import {
-  CanActivate,
-  ExecutionContext,
-  Injectable,
-  UnauthorizedException,
-} from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
-import { AuthService } from '../auth.service';
-import { AuthRequestUser } from '../interfaces/auth-request-user.interface';
+import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from "@nestjs/common";
+import { JwtService } from "@nestjs/jwt";
+import { AuthService } from "../auth.service";
+import { AuthRequestUser } from "../interfaces/auth-request-user.interface";
 
 @Injectable()
 export class JwtAuthGuard implements CanActivate {
@@ -23,20 +18,17 @@ export class JwtAuthGuard implements CanActivate {
 
     const token = this.extractTokenFromHeader(request.headers.authorization);
     if (!token) {
-      throw new UnauthorizedException('Missing bearer token');
+      throw new UnauthorizedException("Missing bearer token");
     }
 
     try {
       const payload = this.jwtService.verify<{
         sub: string;
         email: string;
-        role: AuthRequestUser['role'];
+        role: AuthRequestUser["role"];
       }>(token);
 
-      const user = await this.authService.validateUser(
-        payload.sub,
-        payload.role,
-      );
+      const user = await this.authService.validateUser(payload.sub, payload.role);
       request.user = {
         id: user.id,
         email: user.email,
@@ -45,7 +37,7 @@ export class JwtAuthGuard implements CanActivate {
 
       return true;
     } catch {
-      throw new UnauthorizedException('Invalid or expired token');
+      throw new UnauthorizedException("Invalid or expired token");
     }
   }
 
@@ -54,7 +46,7 @@ export class JwtAuthGuard implements CanActivate {
       return undefined;
     }
 
-    const [type, token] = authorization.split(' ');
-    return type === 'Bearer' ? token : undefined;
+    const [type, token] = authorization.split(" ");
+    return type === "Bearer" ? token : undefined;
   }
 }
