@@ -1,15 +1,36 @@
-# synect
+# Synect
 
-To install dependencies:
+Monorepo for the Synect platform.
+
+## Structure
+
+- `apps/backend`: NestJS API + Prisma
+- `apps/frontend`: Next.js web app
+- `packages`: shared libraries (reserved for upcoming shared code)
+- `docs`: project documentation
+
+## Prerequisites
+
+- Bun 1.2+
+- Node.js 20+ (recommended for ecosystem tooling compatibility)
+
+## Install
 
 ```bash
 bun install
 ```
 
-To run:
+## Run apps
 
 ```bash
-bun run index.ts
+bun run dev:backend
+bun run dev:frontend
 ```
 
-This project was created using `bun init` in bun v1.2.18. [Bun](https://bun.sh) is a fast all-in-one JavaScript runtime.
+## Quality and build
+
+```bash
+bun run lint
+bun run test
+bun run build
+```
