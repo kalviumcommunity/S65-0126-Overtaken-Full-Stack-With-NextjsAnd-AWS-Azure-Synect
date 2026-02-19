@@ -6,6 +6,7 @@ import { JwtAuthGuard } from "../auth/guards/jwt-auth.guard";
 import { RolesGuard } from "../auth/guards/roles.guard";
 import type { AuthRequestUser } from "../auth/interfaces/auth-request-user.interface";
 import { CreateAvailabilityDto } from "./dto/create-availability.dto";
+import { ListAvailabilityQueryDto } from "./dto/list-availability-query.dto";
 import { MentorAvailabilityService } from "./mentor-availability.service";
 
 @Controller("mentor-availability")
@@ -21,13 +22,13 @@ export class MentorAvailabilityController {
 
   @Get("me")
   @Roles(Role.MENTOR)
-  listMine(@CurrentUser() user: AuthRequestUser) {
-    return this.availabilityService.listMine(user);
+  listMine(@CurrentUser() user: AuthRequestUser, @Query() query: ListAvailabilityQueryDto) {
+    return this.availabilityService.listMine(user, query);
   }
 
   @Get()
-  listPublic(@Query("mentorId") mentorId?: string) {
-    return this.availabilityService.listPublic(mentorId);
+  listPublic(@Query() query: ListAvailabilityQueryDto) {
+    return this.availabilityService.listPublic(query);
   }
 
   @Delete(":id")
