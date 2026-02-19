@@ -42,3 +42,21 @@ bun run start
 ```bash
 bun run lint
 ```
+
+## Routing structure
+
+- Public routes: `/`, `/auth/login`, `/auth/signup`
+- Protected routes: `/dashboard`, `/profiles`, `/internships`, `/mentors`, `/availability`, `/bookings`, `/users/[id]`
+- Dynamic route example: `/users/[id]`
+- Route protection is handled via `middleware.ts` using JWT cookie presence checks.
+
+## Layout and components
+
+- Shared layout components are in `app/components/layout`:
+  - `Header`
+  - `Sidebar`
+  - `LayoutWrapper`
+- Reusable UI components are in `app/components/ui`:
+  - `Button`
+  - `Input`
+- Barrel exports are available via `app/components/index.ts`.
