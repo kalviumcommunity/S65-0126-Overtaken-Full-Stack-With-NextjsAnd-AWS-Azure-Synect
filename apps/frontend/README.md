@@ -60,3 +60,13 @@ bun run lint
   - `Button`
   - `Input`
 - Barrel exports are available via `app/components/index.ts`.
+
+## Data fetching and forms
+
+- SWR is used for client-side data fetching with cache + revalidation.
+- Example integration: `app/internships/page.tsx`.
+- React Hook Form + Zod are used for schema-based form validation.
+- Examples:
+  - `app/auth/login/page.tsx`
+  - `app/auth/signup/page.tsx`
+  - `app/internships/page.tsx`
