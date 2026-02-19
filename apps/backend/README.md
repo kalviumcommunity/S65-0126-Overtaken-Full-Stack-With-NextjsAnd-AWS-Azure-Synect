@@ -48,8 +48,14 @@ bun run test:e2e
 - `POST /api/auth/signup`
 - `POST /api/auth/login`
 - `GET /api/auth/me` (requires `Authorization: Bearer <token>`)
+- `GET /api/admin` (requires ADMIN role)
 
 All POST/PATCH payloads are validated with Zod before reaching services.
+
+Errors are handled centrally with a global error handler:
+
+- Development: includes detailed stack/context for debugging
+- Production: redacts sensitive internals and returns safe messages
 
 ## Core endpoints
 
