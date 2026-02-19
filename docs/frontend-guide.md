@@ -86,12 +86,12 @@ Start by using `fetch`.
 Example login request:
 
 ```ts
-const response = await fetch('http://localhost:3001/auth/login', {
-  method: 'POST',
-  headers: { 'Content-Type': 'application/json' },
+const response = await fetch("http://localhost:3001/api/auth/login", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
   body: JSON.stringify({
-    email: 'student@example.com',
-    password: 'Password123',
+    email: "student@example.com",
+    password: "Password123",
   }),
 });
 
@@ -100,7 +100,7 @@ const data = await response.json();
 
 ## 6) JWT token (very important)
 
-When login is successful, backend returns `accessToken`.
+When login is successful, backend returns envelope data. Access token is in `data.accessToken`.
 
 You must send it in protected API requests:
 
@@ -116,39 +116,39 @@ Protected endpoints fail without token.
 
 Auth:
 
-- `POST /auth/signup`
-- `POST /auth/login`
-- `GET /auth/me`
+- `POST /api/auth/signup`
+- `POST /api/auth/login`
+- `GET /api/auth/me`
 
 Profiles:
 
-- `GET /profiles/me`
-- `PATCH /profiles/student`
-- `PATCH /profiles/mentor`
-- `GET /profiles/mentors`
+- `GET /api/profiles/me`
+- `PATCH /api/profiles/student`
+- `PATCH /api/profiles/mentor`
+- `GET /api/profiles/mentors`
 
 Internships:
 
-- `POST /internships`
-- `GET /internships`
-- `GET /internships/:id`
-- `PATCH /internships/:id`
-- `DELETE /internships/:id`
+- `POST /api/internships`
+- `GET /api/internships`
+- `GET /api/internships/:id`
+- `PATCH /api/internships/:id`
+- `DELETE /api/internships/:id`
 
 Mentor Availability:
 
-- `POST /mentor-availability`
-- `GET /mentor-availability/me`
-- `GET /mentor-availability`
-- `DELETE /mentor-availability/:id`
+- `POST /api/mentor-availability`
+- `GET /api/mentor-availability/me`
+- `GET /api/mentor-availability`
+- `DELETE /api/mentor-availability/:id`
 
 Bookings:
 
-- `POST /bookings`
-- `GET /bookings/student`
-- `GET /bookings/mentor`
-- `PATCH /bookings/:id/status`
-- `PATCH /bookings/:id/cancel`
+- `POST /api/bookings`
+- `GET /api/bookings/student`
+- `GET /api/bookings/mentor`
+- `PATCH /api/bookings/:id/status`
+- `PATCH /api/bookings/:id/cancel`
 
 ## 8) Suggested frontend task order
 

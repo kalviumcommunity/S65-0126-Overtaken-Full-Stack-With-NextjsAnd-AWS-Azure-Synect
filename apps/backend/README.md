@@ -45,30 +45,32 @@ bun run test:e2e
 
 ## Auth endpoints
 
-- `POST /auth/signup`
-- `POST /auth/login`
-- `GET /auth/me` (requires `Authorization: Bearer <token>`)
+- `POST /api/auth/signup`
+- `POST /api/auth/login`
+- `GET /api/auth/me` (requires `Authorization: Bearer <token>`)
 
 ## Core endpoints
 
-- `GET /profiles/me`
-- `PATCH /profiles/student`
-- `PATCH /profiles/mentor`
-- `GET /profiles/mentors`
-- `POST /internships`
-- `GET /internships`
-- `GET /internships/:id`
-- `PATCH /internships/:id`
-- `DELETE /internships/:id`
-- `POST /mentor-availability`
-- `GET /mentor-availability/me`
-- `GET /mentor-availability`
-- `DELETE /mentor-availability/:id`
-- `POST /bookings`
-- `GET /bookings/student`
-- `GET /bookings/mentor`
-- `PATCH /bookings/:id/status`
-- `PATCH /bookings/:id/cancel`
+- `GET /api/profiles/me`
+- `PATCH /api/profiles/student`
+- `PATCH /api/profiles/mentor`
+- `GET /api/profiles/mentors`
+- `POST /api/internships`
+- `GET /api/internships`
+- `GET /api/internships/:id`
+- `PATCH /api/internships/:id`
+- `DELETE /api/internships/:id`
+- `POST /api/mentor-availability`
+- `GET /api/mentor-availability/me`
+- `GET /api/mentor-availability`
+- `DELETE /api/mentor-availability/:id`
+- `POST /api/bookings`
+- `GET /api/bookings/student`
+- `GET /api/bookings/mentor`
+- `PATCH /api/bookings/:id/status`
+- `PATCH /api/bookings/:id/cancel`
+
+List endpoints support pagination using `?page=1&limit=10`.
 
 ## Database
 

@@ -8,6 +8,7 @@ import { BookingStatus, Role } from "@prisma/client";
 import { PrismaService } from "../../database/prisma.service";
 import type { AuthRequestUser } from "../auth/interfaces/auth-request-user.interface";
 import { CreateAvailabilityDto } from "./dto/create-availability.dto";
+import { ListAvailabilityQueryDto } from "./dto/list-availability-query.dto";
 
 @Injectable()
 export class MentorAvailabilityService {
@@ -43,24 +44,28 @@ export class MentorAvailabilityService {
     });
   }
 
-  listMine(user: AuthRequestUser) {
+  listMine(user: AuthRequestUser, query: ListAvailabilityQueryDto) {
     if (user.role !== Role.MENTOR) {
       throw new ForbiddenException("Only mentors can view their own availability");
     }
 
     return this.prisma.mentorAvailability.findMany({
       where: { mentorId: user.id },
+      skip: query.skip,
+      take: query.take,
       orderBy: { startTime: "asc" },
     });
   }
 
-  listPublic(mentorId?: string) {
+  listPublic(query: ListAvailabilityQueryDto) {
     return this.prisma.mentorAvailability.findMany({
       where: {
-        mentorId,
+        mentorId: query.mentorId,
         isBooked: false,
         startTime: { gt: new Date() },
       },
+      skip: query.skip,
+      take: query.take,
       include: {
         mentor: {
           select: {

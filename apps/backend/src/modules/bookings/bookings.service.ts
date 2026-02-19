@@ -8,6 +8,7 @@ import { BookingStatus, Role } from "@prisma/client";
 import { PrismaService } from "../../database/prisma.service";
 import type { AuthRequestUser } from "../auth/interfaces/auth-request-user.interface";
 import { CreateBookingDto } from "./dto/create-booking.dto";
+import { ListBookingsQueryDto } from "./dto/list-bookings-query.dto";
 import { UpdateBookingStatusDto } from "./dto/update-booking-status.dto";
 
 @Injectable()
@@ -61,13 +62,15 @@ export class BookingsService {
     });
   }
 
-  listForStudent(user: AuthRequestUser) {
+  listForStudent(user: AuthRequestUser, query: ListBookingsQueryDto) {
     if (user.role !== Role.STUDENT) {
       throw new ForbiddenException("Only students can view student bookings");
     }
 
     return this.prisma.booking.findMany({
       where: { studentId: user.id },
+      skip: query.skip,
+      take: query.take,
       include: {
         mentor: {
           select: {
@@ -82,13 +85,15 @@ export class BookingsService {
     });
   }
 
-  listForMentor(user: AuthRequestUser) {
+  listForMentor(user: AuthRequestUser, query: ListBookingsQueryDto) {
     if (user.role !== Role.MENTOR) {
       throw new ForbiddenException("Only mentors can view mentor bookings");
     }
 
     return this.prisma.booking.findMany({
       where: { mentorId: user.id },
+      skip: query.skip,
+      take: query.take,
       include: {
         student: {
           select: {

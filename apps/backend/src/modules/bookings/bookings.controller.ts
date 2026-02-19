@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Patch, Post, UseGuards } from "@nestjs/common";
+import { Body, Controller, Get, Param, Patch, Post, Query, UseGuards } from "@nestjs/common";
 import { Role } from "@prisma/client";
 import { CurrentUser } from "../auth/decorators/current-user.decorator";
 import { Roles } from "../auth/decorators/roles.decorator";
@@ -7,6 +7,7 @@ import { RolesGuard } from "../auth/guards/roles.guard";
 import type { AuthRequestUser } from "../auth/interfaces/auth-request-user.interface";
 import { BookingsService } from "./bookings.service";
 import { CreateBookingDto } from "./dto/create-booking.dto";
+import { ListBookingsQueryDto } from "./dto/list-bookings-query.dto";
 import { UpdateBookingStatusDto } from "./dto/update-booking-status.dto";
 
 @Controller("bookings")
@@ -22,14 +23,14 @@ export class BookingsController {
 
   @Get("student")
   @Roles(Role.STUDENT)
-  listForStudent(@CurrentUser() user: AuthRequestUser) {
-    return this.bookingsService.listForStudent(user);
+  listForStudent(@CurrentUser() user: AuthRequestUser, @Query() query: ListBookingsQueryDto) {
+    return this.bookingsService.listForStudent(user, query);
   }
 
   @Get("mentor")
   @Roles(Role.MENTOR)
-  listForMentor(@CurrentUser() user: AuthRequestUser) {
-    return this.bookingsService.listForMentor(user);
+  listForMentor(@CurrentUser() user: AuthRequestUser, @Query() query: ListBookingsQueryDto) {
+    return this.bookingsService.listForMentor(user, query);
   }
 
   @Patch(":id/status")

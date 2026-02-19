@@ -33,6 +33,8 @@ export class InternshipsService {
         studentId: user.id,
         status: query.status,
       },
+      skip: query.skip,
+      take: query.take,
       orderBy: { createdAt: "desc" },
     });
   }

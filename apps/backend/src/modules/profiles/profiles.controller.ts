@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Patch, UseGuards } from "@nestjs/common";
+import { Body, Controller, Get, Patch, Query, UseGuards } from "@nestjs/common";
 import { Role } from "@prisma/client";
 import { CurrentUser } from "../auth/decorators/current-user.decorator";
 import { Roles } from "../auth/decorators/roles.decorator";
@@ -7,6 +7,7 @@ import { RolesGuard } from "../auth/guards/roles.guard";
 import type { AuthRequestUser } from "../auth/interfaces/auth-request-user.interface";
 import { UpdateMentorProfileDto } from "./dto/update-mentor-profile.dto";
 import { UpdateStudentProfileDto } from "./dto/update-student-profile.dto";
+import { ListMentorsQueryDto } from "./dto/list-mentors-query.dto";
 import { ProfilesService } from "./profiles.service";
 
 @Controller("profiles")
@@ -32,7 +33,7 @@ export class ProfilesController {
   }
 
   @Get("mentors")
-  listMentors() {
-    return this.profilesService.listMentors();
+  listMentors(@Query() query: ListMentorsQueryDto) {
+    return this.profilesService.listMentors(query);
   }
 }
