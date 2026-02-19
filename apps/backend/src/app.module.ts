@@ -10,6 +10,7 @@ import { HealthModule } from "./modules/health/health.module";
 import { InternshipsModule } from "./modules/internships/internships.module";
 import { MentorAvailabilityModule } from "./modules/mentor-availability/mentor-availability.module";
 import { ProfilesModule } from "./modules/profiles/profiles.module";
+import { UploadsModule } from "./modules/uploads/uploads.module";
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { ProfilesModule } from "./modules/profiles/profiles.module";
     InternshipsModule,
     MentorAvailabilityModule,
     BookingsModule,
+    UploadsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
