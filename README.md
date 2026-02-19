@@ -34,3 +34,8 @@ bun run lint
 bun run test
 bun run build
 ```
+
+## Team workflow
+
+- Branching and PR process: `docs/collaboration-workflow.md`
+- Local setup guide: `docs/setup-guide.md`
