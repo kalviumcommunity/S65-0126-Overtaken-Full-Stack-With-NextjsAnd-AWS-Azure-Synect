@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Manrope, Space_Mono } from "next/font/google";
+import { LayoutWrapper } from "./components/layout";
 import "./globals.css";
 
 const manrope = Manrope({
@@ -26,7 +27,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${manrope.variable} ${spaceMono.variable} antialiased`}>
-        {children}
+        <LayoutWrapper>{children}</LayoutWrapper>
       </body>
     </html>
   );
