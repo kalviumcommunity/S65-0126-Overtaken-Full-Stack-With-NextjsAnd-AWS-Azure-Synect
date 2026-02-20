@@ -1,4 +1,4 @@
-# Cloud Environment Setup (2.40)
+# Cloud Environment Setup
 
 This guide defines how Synect secrets and runtime config should be managed in cloud environments.
 

@@ -60,7 +60,7 @@ Example:
 ```bash
 git checkout main
 git pull
-git checkout -b feature/frontend-login-page
+git checkout -b feat/frontend-login-page
 ```
 
 After work:
@@ -70,7 +70,7 @@ bun run lint
 bun run build
 git add .
 git commit -m "feat(frontend): add login page"
-git push -u origin feature/frontend-login-page
+git push -u origin feat/frontend-login-page
 ```
 
 Then open PR.
