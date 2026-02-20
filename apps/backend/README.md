@@ -40,6 +40,12 @@ bun run build
 bun run start:prod
 ```
 
+## Docker image
+
+```bash
+docker build -t synect-backend:latest .
+```
+
 ## Test
 
 ```bash
