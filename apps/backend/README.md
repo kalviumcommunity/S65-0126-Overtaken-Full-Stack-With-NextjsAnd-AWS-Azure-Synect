@@ -8,6 +8,13 @@ NestJS backend service for Synect.
 - Prisma ORM
 - PostgreSQL
 
+## API documentation
+
+- API and system documentation: `../../docs/api-system-documentation.md`
+- OpenAPI contract: `../../docs/api/synect-openapi.yaml`
+- Postman collection: `../../docs/postman/Synect.postman_collection.json`
+- Architecture overview: `../../docs/architecture-readme.md`
+
 ## Environment
 
 Create `.env` from `.env.example` and set at least:

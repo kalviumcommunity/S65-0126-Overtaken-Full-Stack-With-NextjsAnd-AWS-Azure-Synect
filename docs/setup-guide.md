@@ -1,134 +1,117 @@
 # Synect Setup Guide
 
-This guide helps you run the full project locally (backend + frontend + database).
+This guide covers local development setup for backend, frontend, database, tests, and quality checks.
 
-## 1) What you need first
+## Prerequisites
 
 - Bun 1.2+
 - Node.js 20+
-- Docker Desktop (must be running)
+- Docker Desktop (running)
 - Git
 
-## 2) Clone and install
+## Install dependencies
 
-From project root:
+From repository root:
 
 ```bash
 bun install
 ```
 
-## 3) Backend setup
+## Backend local setup
 
-Go to backend folder:
+1. Copy backend environment file:
 
 ```bash
-cd apps/backend
+cp apps/backend/.env.example apps/backend/.env
 ```
 
-Create `.env` from `.env.example` and keep values like this for local Docker DB:
+2. Confirm local development values in `apps/backend/.env`:
 
 ```env
 DATABASE_URL="postgresql://synect_user:synect_password@localhost:5432/synect_db?schema=public"
 PORT=3001
 JWT_SECRET="replace-with-a-strong-secret"
-JWT_EXPIRES_IN="1d"
+JWT_EXPIRES_IN="15m"
+JWT_ISSUER="synect-api"
+JWT_AUDIENCE="synect-web"
+REDIS_URL="redis://localhost:6379"
 ```
 
-Start PostgreSQL with Docker:
+3. Start local services:
 
 ```bash
-docker compose up -d
+docker compose -f apps/backend/docker-compose.yml up -d
 ```
 
-Run database migration and Prisma client generation:
+4. Run migrations and generate Prisma client:
 
 ```bash
-bun run db:migrate:dev -- --name init_local
-bun run db:generate
+bun run --cwd apps/backend db:migrate:dev -- --name init_local
+bun run --cwd apps/backend db:generate
 ```
 
-Start backend server:
+5. Start backend server:
 
 ```bash
-bun run start:dev
+bun run dev:backend
 ```
 
-Backend runs on `http://localhost:3001`.
+Backend base URL: `http://localhost:3001`
 
-## 4) Frontend setup
+## Frontend local setup
 
-Open a new terminal and go to frontend:
+1. Copy frontend environment file:
 
 ```bash
-cd apps/frontend
+cp apps/frontend/.env.example apps/frontend/.env.local
 ```
 
-Create `.env.local` from `.env.example`:
-
-```bash
-cp .env.example .env.local
-```
-
-Example value:
+2. Set the API URL in `apps/frontend/.env.local`:
 
 ```env
 NEXT_PUBLIC_API_BASE_URL="http://localhost:3001"
 ```
 
-Important:
-
-- Only variables prefixed with `NEXT_PUBLIC_` are available in browser code.
-- Keep secrets server-side only (do not expose secret keys with `NEXT_PUBLIC_`).
-
-Run frontend:
+3. Start frontend:
 
 ```bash
-bun run dev
-```
-
-Frontend runs on `http://localhost:3000`.
-
-## 5) Root-level shortcuts
-
-From repo root:
-
-```bash
-bun run dev:backend
 bun run dev:frontend
-bun run lint
-bun run test
-bun run build
 ```
 
-## 6) Quick health check
+Frontend URL: `http://localhost:3000`
 
-After backend starts, verify:
+## Local validation commands
+
+From repository root:
 
 ```bash
-curl http://localhost:3001/api/health
+bun run lint
+bun run build
+bun run test:frontend
+bun run test
+bun run test:e2e
+bun run test:ci
 ```
 
-Expected response shape:
+## Quick health checks
 
-```json
-{ "status": "ok", "database": "connected" }
-```
+- Backend health: `GET http://localhost:3001/api/health`
+- CI parity command: `bun run test:ci`
 
-## 7) Common issues
+## Common troubleshooting
 
-- `P1000 Authentication failed`:
-  - Check `DATABASE_URL` username/password/db name
-  - Confirm Docker container is up: `docker compose ps`
-- `lockfile is frozen`:
-  - Run `bun install`
-  - Commit lockfile changes if any
-- Port in use:
-  - Change `PORT` in backend `.env` or stop conflicting process
+- `P1000 Authentication failed`
+  - Recheck `DATABASE_URL` username/password/database
+  - Confirm containers are running: `docker compose -f apps/backend/docker-compose.yml ps`
+- `dockerDesktopLinuxEngine` not available
+  - Start Docker Desktop and wait for engine ready
+- CORS/auth request failures
+  - Confirm `CORS_ORIGIN` and frontend API base URL match local ports
+- Dependency lock mismatch
+  - Run `bun install` and commit lockfile updates when required
 
-## 8) Recommended daily workflow
+## Production-oriented notes
 
-1. Pull latest `main`
-2. Create feature branch
-3. Build your changes
-4. Run lint/test/build
-5. Open PR and merge after review
+- Never commit real credentials to the repository.
+- Use secret managers or deployment platform environment settings.
+- Use HTTPS in production and keep strict CORS/JWT settings enabled.

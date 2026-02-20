@@ -1,4 +1,4 @@
-# Domain and SSL Setup (2.42)
+# Domain and SSL Setup
 
 ## Domain mapping
 

@@ -1,4 +1,4 @@
-# Testing Strategy (2.44-2.45)
+# Testing Strategy
 
 ## Unit testing
 

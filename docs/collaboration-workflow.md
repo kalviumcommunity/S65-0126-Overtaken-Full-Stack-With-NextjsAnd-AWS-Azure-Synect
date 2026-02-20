@@ -6,14 +6,14 @@ This guide defines how the Synect team collaborates using GitHub.
 
 Create a dedicated branch per task using one of these prefixes:
 
-- `feature/<short-name>` for new features
+- `feat/<short-name>` for new features
 - `fix/<short-name>` for bug fixes
 - `chore/<short-name>` for maintenance/tooling/config tasks
 - `docs/<short-name>` for documentation-only updates
 
 Examples:
 
-- `feature/internship-crud`
+- `feat/internship-crud`
 - `fix/booking-slot-conflict`
 - `chore/eslint-prettier-update`
 - `docs/setup-guide-update`

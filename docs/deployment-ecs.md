@@ -1,4 +1,4 @@
-# Docker Deployment on AWS ECS (2.41)
+# Docker Deployment on AWS ECS
 
 This project is containerized for production deployment on ECS.
 

@@ -1,4 +1,4 @@
-# Logging and Monitoring (2.43)
+# Logging and Monitoring
 
 ## Structured logs
 
