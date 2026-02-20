@@ -1,5 +1,10 @@
 import { BadRequestException, Injectable, InternalServerErrorException } from "@nestjs/common";
-import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
+import {
+  HeadBucketCommand,
+  HeadObjectCommand,
+  PutObjectCommand,
+  S3Client,
+} from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { randomUUID } from "node:crypto";
 import { PrismaService } from "../../database/prisma.service";
@@ -72,6 +77,35 @@ export class UploadsService {
 
     if (!payload.fileKey.startsWith(`uploads/${user.id}/`)) {
       throw new BadRequestException("Invalid file key for user scope");
+    }
+
+    return this.persistUpload(user, payload);
+  }
+
+  async validateStorageConfig() {
+    const { bucket, region, s3 } = this.getAwsConfig();
+
+    await s3.send(new HeadBucketCommand({ Bucket: bucket }));
+
+    return {
+      bucket,
+      region,
+      status: "connected",
+    };
+  }
+
+  private async persistUpload(user: AuthRequestUser, payload: CompleteUploadInput) {
+    const { bucket, s3 } = this.getAwsConfig();
+
+    const headResult = await s3.send(
+      new HeadObjectCommand({
+        Bucket: bucket,
+        Key: payload.fileKey,
+      }),
+    );
+
+    if (!headResult.ContentLength || headResult.ContentLength !== payload.sizeBytes) {
+      throw new BadRequestException("Uploaded object verification failed");
     }
 
     return this.prisma.uploadedFile.create({
