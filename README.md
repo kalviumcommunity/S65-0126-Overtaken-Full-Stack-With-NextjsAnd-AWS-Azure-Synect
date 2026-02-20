@@ -1,290 +1,84 @@
-# Synect
+# QuickServe Deployment Failure Analysis & Solution Guide
 
-**Synect** is a full-stack internship tracking and mentor booking platform built as a monorepo.
-It provides a structured system for students to manage internship applications, track progress, and book mentor sessions, while mentors and admins manage availability and platform activity.
+## Overview
+QuickServe’s CI/CD pipeline is failing during deployment due to configuration, container lifecycle, and release strategy issues. These failures cause errors such as:
 
----
+- `Environment variable not found`
+- `Port already in use`
+- Old containers still running in production
+- Multiple application versions running simultaneously
 
-# 📦 Monorepo Structure
-
-```
-project-root/
-├── apps/
-│   ├── backend/        # NestJS API + Prisma
-│   └── frontend/       # Next.js app
-├── packages/           # Shared libraries (future use)
-├── docs/               # Documentation
-├── docker-compose.yml  # Container orchestration
-├── .env.example        # Environment template
-```
+This document explains the root causes and how proper containerization, environment management, and pipeline design can resolve them.
 
 ---
 
-# 🚀 Quick Start (Recommended — Docker)
+# Root Cause Analysis
 
-Run the entire stack with one command:
+## 1. Environment Variable Failures
+**Problem**
 
-```bash
-docker compose up --build
-```
+Containers start successfully but crash during runtime because required variables (DB URL, API keys, JWT secrets) are missing.
 
-Access services:
+**Why It Happens**
 
-| Service      | URL                   |
-| ------------ | --------------------- |
-| Backend API  | http://localhost:3000 |
-| Frontend App | http://localhost:3001 |
-| PostgreSQL   | localhost:5432        |
+- Variables defined locally but not configured in cloud environment
+- Secrets not injected into runtime container
+- CI pipeline builds image but deployment stage lacks env config
 
----
+**Impact**
 
-# 🛠 First Time Setup
-
-```bash
-cp .env.example .env
-docker compose up --build
-docker compose exec backend bun run db:migrate:dev
-```
+- Application crashes immediately
+- Health checks fail
+- Deployment stops midway
 
 ---
 
-# 🔄 Daily Development
+## 2. Port Already in Use Errors
+**Problem**
 
-Start services:
+New container cannot start because port is occupied.
 
-```bash
-docker compose up -d
-```
+**Why It Happens**
 
-Stop services:
+- Old container was never stopped
+- Deployment script runs `docker run` without removing existing container
+- No orchestration strategy used
 
-```bash
-docker compose down
-```
+**Impact**
 
-View logs:
-
-```bash
-docker compose logs -f
-```
+- Deployment fails
+- Production downtime
+- Service unreachable
 
 ---
 
-# 🧠 Tech Stack
+## 3. Multiple Versions Running in Production
+**Problem**
 
-### Backend
+Older containers continue running alongside new ones.
 
-* NestJS
-* Prisma ORM
-* PostgreSQL
-* JWT Authentication
-* Bun runtime
+**Why It Happens**
 
-### Frontend
+- No container replacement strategy
+- No version tagging
+- No rolling deployment logic
+- Manual or incomplete deployment scripts
 
-* Next.js 16
-* Tailwind CSS
-* TypeScript
+**Impact**
 
-### Infrastructure
-
-* Docker
-* Docker Compose
-* Bun Monorepo
+- Inconsistent API responses
+- Users hitting different versions
+- Debugging becomes difficult
 
 ---
 
-# 🐘 Database
+# How Proper Containerization Fixes This
 
-### Run migrations
+A well-structured container setup ensures:
 
-```bash
-docker compose exec backend bun run db:migrate:dev
-```
+- deterministic builds
+- isolated runtime environments
+- predictable behavior across machines
+- consistent dependency versions
 
-### Open DB shell
-
-```bash
-docker compose exec db psql -U synect_user -d synect_db
-```
-
-### Reset database
-
-```bash
-docker compose down -v
-docker compose up --build
-```
-
----
-
-# 🔥 Hot Reload (Development)
-
-Backend auto-reloads when editing:
-
-```
-apps/backend/src/
-```
-
-Frontend auto-reloads when editing:
-
-```
-apps/frontend/app/
-```
-
-No container restart needed.
-
----
-
-# 📦 Installing Dependencies
-
-If dependencies change:
-
-```bash
-docker compose up --build
-```
-
----
-
-# 📊 Useful Commands
-
-| Command            | Purpose                                                   |
-| ------------------ | --------------------------------------------------------- |
-| Start all services | `docker compose up -d`                                    |
-| Stop all services  | `docker compose down`                                     |
-| Logs               | `docker compose logs -f`                                  |
-| Backend shell      | `docker compose exec backend bun`                         |
-| Frontend shell     | `docker compose exec frontend bun`                        |
-| DB shell           | `docker compose exec db psql -U synect_user -d synect_db` |
-
----
-
-# 🔐 Environment Variables
-
-Copy template:
-
-```
-.env.example → .env
-```
-
-Important variables:
-
-| Variable            | Purpose          |
-| ------------------- | ---------------- |
-| POSTGRES_USER       | DB username      |
-| POSTGRES_PASSWORD   | DB password      |
-| POSTGRES_DB         | Database name    |
-| JWT_SECRET          | Auth secret      |
-| BACKEND_PORT        | Backend port     |
-| FRONTEND_PORT       | Frontend port    |
-| NEXT_PUBLIC_API_URL | Frontend API URL |
-
-Never commit `.env`.
-
----
-
-# 🔗 Service Architecture
-
-```
-Frontend → Backend → Database
-```
-
-Service dependency chain:
-
-```
-frontend → backend → db
-```
-
-Containers communicate using service names, not localhost.
-
----
-
-# 💾 Persistence
-
-Database data is stored in a Docker named volume:
-
-```
-postgres_data
-```
-
-This means data persists even after containers stop.
-
-To delete all data:
-
-```bash
-docker compose down -v
-```
-
----
-
-# 🧪 Quality Commands
-
-Run lint:
-
-```bash
-bun run lint
-```
-
-Run tests:
-
-```bash
-bun run test
-```
-
-Build project:
-
-```bash
-bun run build
-```
-
----
-
-# 🤝 Team Workflow
-
-### First Setup
-
-```
-clone repo
-cp .env.example .env
-docker compose up --build
-docker compose exec backend bun run db:migrate:dev
-```
-
-### Daily Workflow
-
-```
-docker compose up -d
-```
-
-### Shutdown
-
-```
-docker compose down
-```
-
----
-
-# 📚 Documentation
-
-Detailed Docker instructions:
-
-```
-docs/DOCKER.md
-```
-
----
-
-# 🧭 Project Goal
-
-Deliver a secure, scalable MVP internship platform with:
-
-* authentication
-* role-based access
-* internship tracking
-* mentor booking
-* cloud-ready deployment
-
----
-
-# 🏁 Status
-
-Active development 🚧
+Best practices:

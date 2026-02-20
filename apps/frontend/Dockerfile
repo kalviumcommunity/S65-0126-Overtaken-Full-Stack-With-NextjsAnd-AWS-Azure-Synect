@@ -1,42 +1,36 @@
-# Build stage
+# ---------- Build Stage ----------
 FROM oven/bun:latest AS builder
 
 WORKDIR /app
 
-# Copy package and lock files
-COPY package.json ./
-COPY bun.lock ./
-
-# Install dependencies
+COPY package.json bun.lock ./
 RUN bun install --frozen-lockfile
 
 
-# Runtime stage
+# ---------- Runtime Stage ----------
 FROM oven/bun:latest
 
 WORKDIR /app
 
-# Create non-root user for security
+# Create non-root user
 RUN groupadd -r appuser && useradd -r -g appuser appuser
 
-# Copy from builder
+# Copy dependencies
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/package.json ./
 
-# Copy source files
+# Copy app files
 COPY app ./app
 COPY public ./public
 COPY tsconfig.json next.config.ts postcss.config.mjs ./
 COPY .env.example* ./
 
-# Change ownership
+# Permissions
 RUN chown -R appuser:appuser /app
-
-# Switch to non-root user
 USER appuser
 
-# Expose port
+# Port exposed
 EXPOSE 3000
 
-# Development environment - Next.js dev server with hot reload
-CMD ["bun", "run", "dev"]
+# Start dev server correctly
+CMD ["bun","run","dev","--","-p","3000","-H","0.0.0.0"]
