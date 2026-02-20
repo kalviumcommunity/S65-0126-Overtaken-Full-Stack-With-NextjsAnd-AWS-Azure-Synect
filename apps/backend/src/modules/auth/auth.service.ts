@@ -93,6 +93,7 @@ export class AuthService {
 
   private buildAuthResponse(user: User) {
     const safeUser = this.stripPassword(user);
+    const expiresIn = process.env.JWT_EXPIRES_IN ?? "15m";
     const accessToken = this.jwtService.sign({
       sub: safeUser.id,
       email: safeUser.email,
@@ -102,6 +103,7 @@ export class AuthService {
     return {
       user: safeUser,
       accessToken,
+      expiresIn,
     };
   }
 
