@@ -45,3 +45,5 @@ bun run build
 - Domain/SSL guide: `docs/domain-and-ssl-setup.md`
 - Logging/monitoring guide: `docs/logging-and-monitoring.md`
 - Testing strategy: `docs/testing-strategy.md`
+- Docker build/push automation: `docs/docker-build-push-automation.md`
+- Deployment verification/rollback: `docs/deployment-verification-rollback.md`
