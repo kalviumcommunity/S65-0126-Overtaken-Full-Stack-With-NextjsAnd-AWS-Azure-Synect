@@ -26,7 +26,10 @@ export class JwtAuthGuard implements CanActivate {
         sub: string;
         email: string;
         role: AuthRequestUser["role"];
-      }>(token);
+      }>(token, {
+        issuer: process.env.JWT_ISSUER ?? "synect-api",
+        audience: process.env.JWT_AUDIENCE ?? "synect-client",
+      });
 
       const user = await this.authService.validateUser(payload.sub, payload.role);
       request.user = {

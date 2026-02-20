@@ -16,6 +16,7 @@ Create `.env` from `.env.example` and set at least:
 DATABASE_URL=postgresql://...
 JWT_SECRET=...
 REDIS_URL=redis://localhost:6379
+CORS_ORIGIN=http://localhost:3000
 ```
 
 For local PostgreSQL via Docker:
@@ -55,10 +56,22 @@ bun run test:e2e
 
 All POST/PATCH payloads are validated with Zod before reaching services.
 
+JWT session policy:
+
+- Short-lived access tokens (default `15m`)
+- Issuer and audience claims validated on protected routes
+
 Errors are handled centrally with a global error handler:
 
 - Development: includes detailed stack/context for debugging
 - Production: redacts sensitive internals and returns safe messages
+
+Security baseline:
+
+- Global input sanitization pipe removes script tags/null bytes and trims strings
+- RBAC enforced via JWT guard + roles guard
+- Secure headers (CSP, HSTS in production, frameguard) via Fastify Helmet
+- Optional HTTPS enforcement in production with `FORCE_HTTPS=true`
 
 ## Core endpoints
 
