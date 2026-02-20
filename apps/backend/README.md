@@ -96,6 +96,7 @@ Security baseline:
 - `POST /api/uploads/presign`
 - `POST /api/uploads/complete`
 - `GET /api/uploads/me`
+- `GET /api/uploads/validate-storage` (ADMIN only)
 - `POST /api/emails/welcome` (ADMIN only)
 - `POST /api/emails/notification` (ADMIN only)
 
@@ -112,6 +113,8 @@ List endpoints support pagination using `?page=1&limit=10`.
 - Use `POST /api/uploads/presign` to generate a short-lived S3 pre-signed upload URL.
 - Client uploads directly to S3 using the signed URL.
 - Use `POST /api/uploads/complete` to persist file metadata in PostgreSQL.
+- Upload completion verifies object existence/size in S3 before DB write.
+- Admin can validate bucket connectivity using `GET /api/uploads/validate-storage`.
 
 ## Email service (AWS SES)
 
@@ -125,6 +128,21 @@ List endpoints support pagination using `?page=1&limit=10`.
 bun run db:migrate:dev
 bun run db:generate
 bun run db:seed
+bun run db:migrate:status
 ```
 
 Prisma is configured via `prisma.config.ts` at the backend app root.
+
+## Cloud production notes (AWS RDS + S3)
+
+- For RDS, set `DATABASE_URL` to your RDS connection string with `sslmode=require`.
+- Optional helper var `DATABASE_URL_RDS` can store cloud URL separately.
+- Run migrations against RDS by exporting `DATABASE_URL` to your RDS URL, then run:
+
+```bash
+bun run db:migrate:deploy
+bun run db:migrate:status
+```
+
+- For S3, configure `AWS_REGION`, `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `AWS_S3_BUCKET`.
+- Validate object storage connectivity through `GET /api/uploads/validate-storage`.
