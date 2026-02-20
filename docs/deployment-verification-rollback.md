@@ -1,4 +1,4 @@
-# Deployment Verification and Rollback (2.48)
+# Deployment Verification and Rollback
 
 Deployment safety is implemented in the Docker release workflow.
 

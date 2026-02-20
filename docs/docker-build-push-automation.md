@@ -1,4 +1,4 @@
-# Docker Build and Push Automation (2.47)
+# Docker Build and Push Automation
 
 Docker build/push automation is configured in:
 
