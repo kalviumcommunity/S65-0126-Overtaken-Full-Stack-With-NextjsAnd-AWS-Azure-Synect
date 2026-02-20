@@ -7,13 +7,15 @@
   ],
   "scripts": {
     "prepare": "husky",
-    "dev:frontend": "bun --cwd apps/frontend run dev",
-    "dev:backend": "bun --cwd apps/backend run start:dev",
-    "build": "bun --cwd apps/backend run build && bun --cwd apps/frontend run build",
-    "lint": "bun --cwd apps/backend run lint && bun --cwd apps/frontend run lint",
+    "dev:frontend": "bun run --cwd apps/frontend dev",
+    "dev:backend": "bun run --cwd apps/backend start:dev",
+    "build": "bun run --cwd apps/backend build && bun run --cwd apps/frontend build",
+    "lint": "bun run --cwd apps/backend lint && bun run --cwd apps/frontend lint",
     "format": "prettier --write .",
-    "test": "bun --cwd apps/backend run test",
-    "test:e2e": "bun --cwd apps/backend run test:e2e"
+    "test:frontend": "bun run --cwd apps/frontend test",
+    "test": "bun run --cwd apps/backend test",
+    "test:e2e": "bun run --cwd apps/backend test:e2e",
+    "test:ci": "bun run test:frontend && bun run test && bun run test:e2e"
   },
   "lint-staged": {
     "apps/backend/**/*.{js,mjs,cjs,ts,tsx}": [
