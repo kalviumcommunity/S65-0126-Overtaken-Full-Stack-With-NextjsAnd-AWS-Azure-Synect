@@ -40,3 +40,7 @@ bun run build
 - Branching and PR process: `docs/collaboration-workflow.md`
 - Local setup guide: `docs/setup-guide.md`
 - API conventions: `docs/api-conventions.md`
+- Cloud environment setup: `docs/cloud-environment-setup.md`
+- ECS deployment guide: `docs/deployment-ecs.md`
+- Domain/SSL guide: `docs/domain-and-ssl-setup.md`
+- Logging/monitoring guide: `docs/logging-and-monitoring.md`

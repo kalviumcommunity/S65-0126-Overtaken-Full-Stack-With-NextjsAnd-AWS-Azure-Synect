@@ -1,15 +1,21 @@
 import { ValidationPipe } from "@nestjs/common";
 import { NestFactory } from "@nestjs/core";
 import helmet from "@fastify/helmet";
+import { assertRequiredEnv } from "./common/config/required-env";
 import { FastifyAdapter, NestFastifyApplication } from "@nestjs/platform-fastify";
 import { GlobalHttpExceptionFilter } from "./common/filters/global-http-exception.filter";
 import { ApiResponseInterceptor } from "./common/interceptors/api-response.interceptor";
+import { RequestLoggingInterceptor } from "./common/interceptors/request-logging.interceptor";
 import { SanitizeInputPipe } from "./common/pipes/sanitize-input.pipe";
 import { AppModule } from "./app.module";
 import { config } from "dotenv";
 config();
 
 async function bootstrap() {
+  if (process.env.NODE_ENV === "production") {
+    assertRequiredEnv();
+  }
+
   const app = await NestFactory.create<NestFastifyApplication>(AppModule, new FastifyAdapter());
 
   // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
@@ -56,7 +62,7 @@ async function bootstrap() {
     }),
   );
   app.setGlobalPrefix("api");
-  app.useGlobalInterceptors(new ApiResponseInterceptor());
+  app.useGlobalInterceptors(new RequestLoggingInterceptor(), new ApiResponseInterceptor());
   app.useGlobalFilters(new GlobalHttpExceptionFilter());
   const allowedOrigins = (process.env.CORS_ORIGIN ?? "http://localhost:3000").split(",");
   app.enableCors({
