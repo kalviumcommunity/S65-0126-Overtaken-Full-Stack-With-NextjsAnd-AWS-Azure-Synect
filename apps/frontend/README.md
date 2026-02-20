@@ -8,6 +8,13 @@ Next.js frontend application for Synect.
 - React 19
 - TypeScript
 
+## Related documentation
+
+- Setup guide: `../../docs/setup-guide.md`
+- Frontend guide: `../../docs/frontend-guide.md`
+- API and system documentation: `../../docs/api-system-documentation.md`
+- Architecture overview: `../../docs/architecture-readme.md`
+
 ## Run
 
 Create local env file from example:
