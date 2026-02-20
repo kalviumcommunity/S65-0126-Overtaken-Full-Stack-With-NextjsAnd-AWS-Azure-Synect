@@ -12,6 +12,7 @@ Example:
 - `POST /api/auth/login`
 - `GET /api/admin` (ADMIN role only)
 - `POST /api/emails/welcome` (ADMIN role only)
+- `GET /api/uploads/validate-storage` (ADMIN role only)
 
 ## Route naming
 
