@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { PageShell } from "@/app/components/page-shell";
@@ -14,7 +14,6 @@ import { loginSchema, type LoginFormValues } from "@/lib/validation/auth";
 export default function LoginPage() {
   const [submitError, setSubmitError] = useState<string | null>(null);
   const router = useRouter();
-  const searchParams = useSearchParams();
 
   const {
     register,
@@ -39,7 +38,10 @@ export default function LoginPage() {
 
       setAccessToken(response.accessToken);
 
-      const nextPath = searchParams.get("next");
+      const nextPath =
+        typeof window !== "undefined"
+          ? new URLSearchParams(window.location.search).get("next")
+          : null;
       router.push(nextPath && nextPath.startsWith("/") ? nextPath : "/dashboard");
       router.refresh();
     } catch (error) {
