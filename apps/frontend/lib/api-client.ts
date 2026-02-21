@@ -1,3 +1,5 @@
+import { getAccessToken } from "@/lib/auth-session";
+
 export type ApiEnvelope<T> = {
   success: boolean;
   message: string;
@@ -8,10 +10,13 @@ export type ApiEnvelope<T> = {
 const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:3001";
 
 export async function apiFetch<T>(path: string, init?: RequestInit): Promise<T> {
+  const accessToken = getAccessToken();
+
   const response = await fetch(`${baseUrl}${path}`, {
     ...init,
     headers: {
       "Content-Type": "application/json",
+      ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
       ...(init?.headers ?? {}),
     },
     credentials: "include",

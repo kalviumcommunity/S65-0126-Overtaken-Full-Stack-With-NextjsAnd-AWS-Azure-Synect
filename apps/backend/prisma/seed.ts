@@ -1,5 +1,6 @@
 import { BookingStatus, InternshipStatus, PrismaClient, Role } from "@prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
+import { hash } from "bcryptjs";
 import { Pool } from "pg";
 
 const pool = new Pool({
@@ -11,14 +12,17 @@ const adapter = new PrismaPg(pool);
 const prisma = new PrismaClient({ adapter });
 
 async function main() {
+  const passwordHash = await hash("Password123", 10);
+
   const student = await prisma.user.upsert({
     where: { email: "student@synect.dev" },
     update: {
       role: Role.STUDENT,
+      passwordHash,
     },
     create: {
       email: "student@synect.dev",
-      passwordHash: "seeded-password-hash",
+      passwordHash,
       role: Role.STUDENT,
     },
   });
@@ -27,10 +31,11 @@ async function main() {
     where: { email: "mentor@synect.dev" },
     update: {
       role: Role.MENTOR,
+      passwordHash,
     },
     create: {
       email: "mentor@synect.dev",
-      passwordHash: "seeded-password-hash",
+      passwordHash,
       role: Role.MENTOR,
     },
   });
@@ -39,10 +44,11 @@ async function main() {
     where: { email: "admin@synect.dev" },
     update: {
       role: Role.ADMIN,
+      passwordHash,
     },
     create: {
       email: "admin@synect.dev",
-      passwordHash: "seeded-password-hash",
+      passwordHash,
       role: Role.ADMIN,
     },
   });
