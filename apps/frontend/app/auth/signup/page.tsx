@@ -1,16 +1,18 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { PageShell } from "@/app/components/page-shell";
 import { Button, Input } from "@/app/components";
 import { apiFetch } from "@/lib/api-client";
+import { setAccessToken } from "@/lib/auth-session";
 import { signupSchema, type SignupFormValues } from "@/lib/validation/auth";
 
 export default function SignupPage() {
   const [submitError, setSubmitError] = useState<string | null>(null);
-  const [submitSuccess, setSubmitSuccess] = useState<string | null>(null);
+  const router = useRouter();
 
   const {
     register,
@@ -28,10 +30,9 @@ export default function SignupPage() {
 
   const onSubmit = async (values: SignupFormValues) => {
     setSubmitError(null);
-    setSubmitSuccess(null);
 
     try {
-      await apiFetch<{ accessToken: string }>("/api/auth/signup", {
+      const response = await apiFetch<{ accessToken: string }>("/api/auth/signup", {
         method: "POST",
         body: JSON.stringify({
           email: values.email,
@@ -39,7 +40,10 @@ export default function SignupPage() {
           role: values.role,
         }),
       });
-      setSubmitSuccess("Account created successfully.");
+
+      setAccessToken(response.accessToken);
+      router.push("/dashboard");
+      router.refresh();
     } catch (error) {
       setSubmitError(error instanceof Error ? error.message : "Unable to signup");
     }
@@ -48,7 +52,7 @@ export default function SignupPage() {
   return (
     <PageShell
       title="Create your Synect account"
-      subtitle="Choose your role and create your account. Ready for backend integration with POST /api/auth/signup."
+      subtitle="Choose your role, create your account, and start using Synect immediately."
     >
       <section className="glass max-w-2xl px-5 py-6">
         <form className="grid gap-4 md:grid-cols-2" onSubmit={handleSubmit(onSubmit)}>
@@ -96,7 +100,6 @@ export default function SignupPage() {
         </form>
 
         {submitError ? <p className="mt-3 text-sm text-red-600">{submitError}</p> : null}
-        {submitSuccess ? <p className="mt-3 text-sm text-green-700">{submitSuccess}</p> : null}
       </section>
     </PageShell>
   );
